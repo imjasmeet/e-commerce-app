@@ -1,119 +1,234 @@
-# E-Commerce Store
+# E-Commerce API
 
-A simple e-commerce application built with Python Flask that allows users to browse products, add them to cart, and place orders.
+A RESTful API for e-commerce operations built with Python Flask, featuring comprehensive logging, error handling, and failure simulation capabilities.
 
 ## Features
 
-- **Product Catalog**: Browse available products with descriptions and prices
-- **Shopping Cart**: Add/remove products from cart with quantity tracking
-- **Checkout Process**: Complete orders with customer information
-- **Order Management**: Store orders in SQLite database
-- **Responsive Design**: Modern UI with Bootstrap and Font Awesome icons
+- **Product Management**: List and retrieve products
+- **Shopping Cart**: Add, remove, and manage cart items
+- **Order Processing**: Create and retrieve orders
+- **Comprehensive Logging**: Structured logging with rotation
+- **Error Handling**: Graceful error handling with detailed logging
+- **Failure Simulation**: Test application resilience with simulated failures
+- **Health Monitoring**: Application health checks and monitoring
+- **Docker Support**: Containerized deployment with Docker Compose
 
-## Sample Products
+## API Endpoints
 
-The application comes with 5 sample products:
-- Laptop ($999.99)
-- Smartphone ($699.99)
-- Headphones ($199.99)
-- Tablet ($399.99)
-- Smartwatch ($299.99)
+### Products
+- `GET /api/products` - Get all products
+- `GET /api/products/{id}` - Get specific product
 
-## Installation
+### Cart
+- `GET /api/cart` - Get current cart
+- `POST /api/cart/add` - Add product to cart
+- `DELETE /api/cart/remove/{id}` - Remove product from cart
+- `DELETE /api/cart/clear` - Clear entire cart
 
-### Option 1: Local Development
+### Orders
+- `GET /api/orders` - Get all orders
+- `GET /api/orders/{id}` - Get specific order with items
+- `POST /api/orders` - Create new order
 
-1. **Clone or download the project**
+### System
+- `GET /api/health` - Health check
+- `GET /api/logs` - View application logs
+- `GET /api/simulate/{type}` - Simulate failures
+- `GET /api` - API information
 
-2. **Install dependencies**:
+## Quick Start
+
+### Local Development
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd e-commerce-app
+   ```
+
+2. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Run the application**:
+3. **Run the application**
    ```bash
    python app.py
    ```
 
-4. **Access the application**:
-   Open your browser and go to `http://localhost:8000`
+4. **Access the API**
+   - API Base URL: `http://localhost:8000/api`
+   - Health Check: `http://localhost:8000/api/health`
+   - API Info: `http://localhost:8000/api`
 
-### Option 2: Docker Deployment (Recommended)
+### Docker Deployment (Recommended)
 
-1. **Deploy with Docker Compose**:
+1. **Deploy with Docker Compose**
    ```bash
-   # Quick deployment
    ./deploy.sh
-   
-   # Or manually
+   ```
+
+2. **Manual Docker commands**
+   ```bash
+   # Build and start
    docker-compose up --build -d
-   ```
-
-2. **Access the application**:
-   Open your browser and go to `http://localhost:8000`
-
-3. **View logs**:
-   ```bash
+   
+   # View logs
    docker-compose logs -f
-   ```
-
-4. **Stop the application**:
-   ```bash
+   
+   # Stop the app
    docker-compose down
    ```
 
-## Usage
+## API Usage Examples
 
-1. **Browse Products**: View the product catalog on the home page
-2. **Add to Cart**: Click "Add to Cart" on any product
-3. **View Cart**: Click the cart icon in the navigation to see your items
-4. **Remove Items**: Use the "Remove" button in the cart to delete items
-5. **Checkout**: Click "Proceed to Checkout" to place your order
-6. **Complete Order**: Fill in your name and email, then click "Place Order"
+### Get Products
+```bash
+curl http://localhost:8000/api/products
+```
 
-## Database
+### Add to Cart
+```bash
+curl -X POST http://localhost:8000/api/cart/add \
+  -H "Content-Type: application/json" \
+  -d '{"product_id": 1, "quantity": 2}'
+```
 
-The application uses SQLite with three main tables:
-- `products`: Product information (name, description, price, stock)
+### Get Cart
+```bash
+curl http://localhost:8000/api/cart
+```
 
+### Create Order
+```bash
+curl -X POST http://localhost:8000/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{"customer_name": "John Doe", "customer_email": "john@example.com"}'
+```
 
-- `orders`: Customer orders (name, email, total amount, date)
-- `order_items`: Individual items in each order
+### Health Check
+```bash
+curl http://localhost:8000/api/health
+```
 
-The database is automatically created when you first run the application.
+## Response Format
+
+All API responses follow a standard format:
+
+```json
+{
+  "success": true,
+  "message": "Operation completed successfully",
+  "timestamp": "2025-07-31T12:00:00",
+  "data": {
+    // Response data here
+  }
+}
+```
+
+## Logging
+
+The application includes comprehensive logging with the following features:
+
+- **Multiple log files**: `app.log`, `error.log`, `ecommerce.log`
+- **Log rotation**: 1MB max file size with 5 backup files
+- **Structured logging**: JSON-formatted log entries
+- **Performance tracking**: Response time monitoring
+- **User action tracking**: Detailed user interaction logs
+- **Error logging**: Comprehensive error context
+
+### Log Files
+- `logs/app.log` - General application logs
+- `logs/error.log` - Error-specific logs
+- `logs/ecommerce.log` - E-commerce specific operations
+
+## Testing
+
+### Run Failure Tests
+```bash
+python test_failures.py
+```
+
+This script tests:
+- Database failure simulation
+- Slow response simulation
+- Random error simulation
+- Application recovery
+
+### Manual Testing
+```bash
+# Test health endpoint
+curl http://localhost:8000/api/health
+
+# Test failure simulations
+curl http://localhost:8000/api/simulate/db-failure
+curl http://localhost:8000/api/simulate/slow-response
+curl http://localhost:8000/api/simulate/random-errors
+```
 
 ## Project Structure
 
 ```
 e-commerce-app/
-├── app.py              # Main Flask application
-├── requirements.txt    # Python dependencies
-├── README.md          # This file
-├── Dockerfile         # Docker configuration
-├── docker-compose.yml # Docker Compose configuration
-├── deploy.sh          # Deployment script
-├── .dockerignore      # Docker ignore file
-├── templates/         # HTML templates
-│   ├── base.html      # Base template with navigation
-│   ├── index.html     # Product listing page
-│   ├── cart.html      # Shopping cart page
-│   └── checkout.html  # Checkout page
-└── static/            # Static files (CSS, images)
+├── app.py                 # Main Flask application
+├── requirements.txt       # Python dependencies
+├── Dockerfile            # Docker image definition
+├── docker-compose.yml    # Docker Compose configuration
+├── deploy.sh             # Deployment script
+├── test_failures.py      # Failure testing script
+├── .gitignore           # Git ignore rules
+├── .dockerignore        # Docker ignore rules
+├── README.md            # Project documentation
+└── logs/                # Application logs (created at runtime)
+    ├── app.log
+    ├── error.log
+    └── ecommerce.log
 ```
 
-## Technologies Used
+## Environment Variables
 
-- **Backend**: Python Flask
-- **Database**: SQLite
-- **Frontend**: HTML, Bootstrap 5, Font Awesome
-- **Session Management**: Flask sessions for cart functionality
+- `FLASK_ENV`: Set to `production` for Docker deployment
+- `FLASK_APP`: Set to `app.py`
 
-## Demo Features
+## Database
 
-- Session-based shopping cart
-- Product catalog with pricing
-- Order placement with customer details
-- Responsive design for mobile and desktop
-- Flash messages for user feedback
+The application uses SQLite with the following tables:
+- `products`: Product catalog
+- `orders`: Customer orders
+- `order_items`: Order line items
 
-This is a demo application for educational purposes. No real payment processing is implemented. 
+## Error Handling
+
+The API includes comprehensive error handling:
+- Standardized error responses
+- Detailed error logging
+- Graceful failure recovery
+- Input validation
+- Database error handling
+
+## Monitoring
+
+- Health check endpoint for monitoring
+- Performance metrics logging
+- Application status tracking
+- Log file monitoring
+
+## Security Features
+
+- Input validation
+- SQL injection prevention
+- Error message sanitization
+- Session management
+- Non-root Docker user
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License. 

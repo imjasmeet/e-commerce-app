@@ -150,4 +150,8 @@ ehthumbs.db
 Thumbs.db
 
 # Docker
-.dockerignore 
+.dockerignore
+
+# Logs
+logs/
+*.log 

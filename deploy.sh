@@ -16,9 +16,9 @@ sleep 10
 
 # Check if the application is running
 echo "🔍 Checking application status..."
-if curl -f http://localhost:8000/ > /dev/null 2>&1; then
+if curl -f http://localhost:8000/api/health > /dev/null 2>&1; then
     echo "✅ Application is running successfully!"
-    echo "🌐 Access the app at: http://localhost:8000"
+    echo "🌐 Access the API at: http://localhost:8000/api"
     echo "📊 View logs with: docker-compose logs -f"
 else
     echo "❌ Application failed to start. Check logs with: docker-compose logs"
