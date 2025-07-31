@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-shopping-cart me-2"></i>Shopping Cart
+        </h1>
+    </div>
+</div>
+
+{% if cart_items %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.name }}</strong>
+                                </td>
+                                <td>${{ "%.2f"|format(item.price) }}</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ item.quantity }}</span>
+                                </td>
+                                <td>
+                                    <strong>${{ "%.2f"|format(item.total) }}</strong>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('remove_from_cart', product_id=item.id) }}" 
+                                       class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash me-1"></i>Remove
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                        </a>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="h4 mb-3">
+                            <strong>Total: ${{ "%.2f"|format(total) }}</strong>
+                        </div>
+                        <a href="{{ url_for('checkout') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-12 text-center">
+        <div class="alert alert-info">
+            <i class="fas fa-shopping-cart me-2"></i>Your cart is empty.
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">
+            <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-credit-card me-2"></i>Checkout
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i>Customer Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="customer_name" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="customer_email" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="customer_email" name="customer_email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check me-2"></i>Place Order
+                            </button>
+                            <a href="{{ url_for('cart') }}" class="btn btn-secondary btn-lg ms-2">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Order Summary
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    <strong>Items in Cart:</strong> {{ session.cart.values() | sum if session.cart else 0 }}
+                </div>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Note:</strong> This is a demo application. No real payment processing will occur.
+                </div>
+                
+                <div class="alert alert-success">
+                    <i class="fas fa-shipping-fast me-2"></i>
+                    <strong>Free Shipping</strong> on all orders!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
