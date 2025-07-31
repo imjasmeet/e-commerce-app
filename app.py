@@ -16,6 +16,7 @@ app.secret_key = 'your-secret-key-here'
 SIMULATE_DB_FAILURE = False
 SIMULATE_SLOW_RESPONSE = False
 SIMULATE_RANDOM_ERRORS = False
+SIMULATE_NULL_POINTER = False
 
 # Configure logging
 def setup_logging():
@@ -225,6 +226,12 @@ def simulate_failures():
     if SIMULATE_RANDOM_ERRORS and random.random() < 0.3:
         logger.warning("Simulating random application error")
         raise Exception("Random application error")
+    
+    if SIMULATE_NULL_POINTER:
+        logger.warning("Simulating null pointer exception")
+        # Create a null reference and try to access it
+        null_obj = None
+        null_obj.some_attribute  # This will raise AttributeError (Python's equivalent of NullPointerException)
 
 # API Routes
 
@@ -693,6 +700,17 @@ def simulate_random_errors():
         message=f"Random error simulation {status}"
     )
 
+@app.route('/api/simulate/null-pointer', methods=['GET'])
+def simulate_null_pointer():
+    global SIMULATE_NULL_POINTER
+    SIMULATE_NULL_POINTER = not SIMULATE_NULL_POINTER
+    status = "enabled" if SIMULATE_NULL_POINTER else "disabled"
+    logger.warning(f"Null pointer exception simulation {status}")
+    return api_response(
+        data={'simulation': 'null_pointer', 'status': status},
+        message=f"Null pointer exception simulation {status}"
+    )
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     start_time = time.time()
@@ -714,7 +732,8 @@ def health_check():
                 "simulations": {
                     "db_failure": SIMULATE_DB_FAILURE,
                     "slow_response": SIMULATE_SLOW_RESPONSE,
-                    "random_errors": SIMULATE_RANDOM_ERRORS
+                    "random_errors": SIMULATE_RANDOM_ERRORS,
+                    "null_pointer": SIMULATE_NULL_POINTER
                 }
             },
             message="Application is healthy"
@@ -789,7 +808,7 @@ def api_info():
                 "system": {
                     "GET /api/health": "Health check",
                     "GET /api/logs": "View application logs",
-                    "GET /api/simulate/{type}": "Simulate failures"
+                    "GET /api/simulate/{type}": "Simulate failures (db-failure, slow-response, random-errors, null-pointer)"
                 }
             }
         },

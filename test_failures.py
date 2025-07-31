@@ -115,6 +115,31 @@ def test_random_errors():
         print(f"❌ Failed to toggle random errors: {response.status_code}")
         return False
 
+def test_null_pointer():
+    """Test null pointer exception simulation"""
+    print("💥 Testing Null Pointer Exception Simulation...")
+    
+    # Enable null pointer simulation
+    response = requests.get(f"{BASE_URL}/simulate/null-pointer")
+    if response.status_code == 200:
+        print("   Null pointer simulation enabled")
+        
+        # Test orders endpoint (should trigger null pointer)
+        response = requests.get(f"{BASE_URL}/orders")
+        if response.status_code == 500:
+            print("✅ Null pointer exception correctly triggered 500 error")
+        else:
+            print(f"❌ Expected 500, got {response.status_code}")
+        
+        # Disable null pointer simulation
+        response = requests.get(f"{BASE_URL}/simulate/null-pointer")
+        if response.status_code == 200:
+            print("   Null pointer simulation disabled")
+            return True
+    else:
+        print(f"❌ Failed to toggle null pointer: {response.status_code}")
+        return False
+
 def test_cart_operations():
     """Test cart operations with failures"""
     print("🛒 Testing Cart Operations with Failures...")
@@ -196,6 +221,9 @@ def main():
     test_random_errors()
     print()
     
+    test_null_pointer()
+    print()
+    
     test_cart_operations()
     print()
     
@@ -208,6 +236,7 @@ def main():
     print("   - Database failure simulation: ✅")
     print("   - Slow response simulation: ✅")
     print("   - Random error simulation: ✅")
+    print("   - Null pointer simulation: ✅")
     print("   - Error handling: ✅")
     print("   - Recovery: ✅")
 
